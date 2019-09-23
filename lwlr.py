@@ -27,3 +27,15 @@ class LWLR(object):
         for example in test:
             result.append(self.predict_single(example))
         return np.array(result)
+    
+
+# 在孩子身高数据集上使用
+train = pd.read_csv('height_train.csv')
+test = pd.read_csv('height_test.csv')
+real = pd.read_csv('height_real.csv')
+
+lwlr = LWLR(k=0.2)
+lwlr.fit(train.loc[:,['father_height','mother_height','boy_dummy']].values,train.child_height.values)
+test['prediction']=lwlr.predict(test.loc[:,['father_height','mother_height','boy_dummy']].values)
+
+print(np.square(test.prediction*100-real.child_height*100).mean())
